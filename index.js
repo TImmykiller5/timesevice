@@ -24,32 +24,24 @@ app.get("/", function (req, res) {
 // });
 
 app.get("/api/:date", (req, res) => {
-  // console.log(Date.parse(req.params["date"]));
-  const regex = /^\d{4}-\d{2}-\d{2}$/;
-  if (regex.test(req.params["date"])) {
-    const d = new Date(req.params["date"]);
-    console.log(d);
-    if (!isNaN(d)) {
-      res.json({
-        unix: d.valueOf(),
-        utc: d.toUTCString(),
-      });
-    } else {
-      res.json({ error: "Invalid Date" });
-    }
-  } else {
+  const strDate = req.params["date"]
+  if (!isNaN(new Date(strDate))){
+    const d = new Date(strDate);
+
+    res.json({
+            unix: d.valueOf(),
+            utc: d.toUTCString(),
+          });
+  } else if(!isNaN(new Date(Number(strDate)))){
     const unix = Number(req.params["date"])
     const d = new Date(unix);
-
-    console.log(d)
-    if (!isNaN(d)) {
-      res.json({
-        unix: d.valueOf(),
-        utc: d.toUTCString(),
-      });
-    } else {
+    res.json({
+      unix: d.valueOf(),
+      utc: d.toUTCString(),
+    });
+  }else{
       res.json({ error: "Invalid Date" });
-    }
+
   }
 });
 app.get("/api", (req, res) => {
